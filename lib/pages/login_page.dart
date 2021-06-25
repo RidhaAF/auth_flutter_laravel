@@ -1,5 +1,7 @@
 import 'package:auth_flutter_laravel/pages/home_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:auth_flutter_laravel/providers/auth_provider.dart';
 import 'package:auth_flutter_laravel/pages/register_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -11,8 +13,44 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
 
+  bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
+
+    handleSignIn() async {
+      setState(() {
+        isLoading = true;
+      });
+
+      if (await authProvider.login(
+        email: emailController.text,
+        password: passwordController.text,
+      )) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomePage(),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.red,
+            content: Text(
+              'Gagal Login!',
+              textAlign: TextAlign.center,
+            ),
+          ),
+        );
+      }
+
+      setState(() {
+        isLoading = false;
+      });
+    }
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -42,6 +80,7 @@ class _LoginPageState extends State<LoginPage> {
               'Password',
             ),
             TextFormField(
+              obscureText: true,
               controller: passwordController,
               decoration: InputDecoration(
                   border: UnderlineInputBorder(),
@@ -55,12 +94,7 @@ class _LoginPageState extends State<LoginPage> {
               width: double.infinity,
               child: TextButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => HomePage(),
-                    ),
-                  );
+                  handleSignIn();
                 },
                 style: TextButton.styleFrom(
                   backgroundColor: Colors.blue,
@@ -70,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 child: Text(
-                  'Login',
+                  isLoading ? 'Loading...' : 'Login',
                 ),
               ),
             ),
