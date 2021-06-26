@@ -7,10 +7,10 @@ class AuthService {
   String baseUrl = 'http://10.0.2.2:8000/api';
 
   Future<UserModel> register({
-    required String name,
-    required String username,
-    required String email,
-    required String password,
+    String name,
+    String username,
+    String email,
+    String password,
   }) async {
     var url = '$baseUrl/register';
     var headers = {'Content-Type': 'application/json'};
@@ -22,7 +22,7 @@ class AuthService {
     });
 
     var response = await http.post(
-      Uri.parse(url),
+      url,
       headers: headers,
       body: body,
     );
@@ -41,8 +41,8 @@ class AuthService {
   }
 
   Future<UserModel> login({
-    required String email,
-    required String password,
+    String email,
+    String password,
   }) async {
     var url = '$baseUrl/login';
     var headers = {'Content-Type': 'application/json'};
@@ -52,7 +52,7 @@ class AuthService {
     });
 
     var response = await http.post(
-      Uri.parse(url),
+      url,
       headers: headers,
       body: body,
     );

@@ -56,6 +56,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
     return Scaffold(
       appBar: AppBar(
+        brightness: Brightness.dark,
         title: Text(
           'Register',
         ),
